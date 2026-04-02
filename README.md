@@ -22,11 +22,17 @@ Professional project for comparing machine learning models on the wine dataset f
     source venv/bin/activate
     pip install -r requirements.txt
     ```
-2. Train your first model:
+2. Train all models (or a specific one):
     ```bash
-    python -m src.cli train --model [model_type]
+    # Train all models
+    python -m src.cli train
+
+    # Or train a specific model
+    python -m src.cli train --model decision_tree
+    python -m src.cli train --model logistic_regression
+    python -m src.cli train --model svm
     ```
-   The trained model will be saved to `artifacts/model_[model_type].joblib` and accuracy will be printed in the terminal.
+   Each trained model will be saved to `artifacts/model_[model_type].joblib` and accuracy will be printed in the terminal.
 
 ---
 
@@ -37,13 +43,12 @@ Compare various ML models (e.g., decision trees, SVM, logistic regression) on th
 
 ## CLI Commands
 
-- `python -m src.cli train --model [model_type]` — trains a model of the selected type. Output: accuracy and model path.
-    - `[model_type]` can be one of:
-        - `decision_tree` (default)
-        - `logistic_regression`
-        - `svm`
+- `python -m src.cli train [--model MODEL_TYPE]` — trains models. Output: accuracy and model path.
+    - If `--model` is not provided, all models will be trained sequentially: `decision_tree`, `logistic_regression`, `svm`.
+    - If `--model MODEL_TYPE` is provided, only the selected model will be trained.
     - Example:
         ```bash
+        python -m src.cli train           # trains all models
         python -m src.cli train --model decision_tree
         python -m src.cli train --model logistic_regression
         python -m src.cli train --model svm

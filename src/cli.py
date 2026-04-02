@@ -15,15 +15,30 @@ def print_usage():
 
 
 def handle_train(args):
-    model_type = "decision_tree"
     if "--model" in args:
         idx = args.index("--model")
         if idx + 1 < len(args):
             model_type = args[idx + 1]
-    print(f"Training model: {model_type}. Please wait...")
-    result = train(model_type=model_type)
-    print(f"Model trained. Accuracy: {result['accuracy']:.4f}")
-    print(f"Model saved to: {result['model_path']}\n")
+            print(f"Training model: {model_type}. Please wait...")
+            result = train(model_type=model_type)
+            print(f"Model trained. Accuracy: {result['accuracy']:.4f}")
+            print(f"Model saved to: {result['model_path']}\n")
+        else:
+            print("Error: --model provided but no model type specified.")
+    else:
+        # Train all models if no specific model is provided
+        all_models = ["decision_tree", "logistic_regression", "svm"]
+        results = []
+        print(
+            "No --model specified. Training all models: decision_tree, logistic_regression, svm. Please wait...\n"
+        )
+        for model_type in all_models:
+            result = train(model_type=model_type)
+            results.append(result)
+            print(
+                f"Model: {model_type} | Accuracy: {result['accuracy']:.4f} | Saved to: {result['model_path']}"
+            )
+        print("\nAll models trained.")
 
 
 COMMAND_HANDLERS = {
