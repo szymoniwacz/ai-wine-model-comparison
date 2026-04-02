@@ -1,5 +1,7 @@
 import sys
+from sklearn.datasets import load_wine
 from src.trainer import train
+from src.formatters.confusion_matrix_formatter import format_confusion_matrix_result
 
 AVAILABLE_COMMANDS = (
     "train",
@@ -14,31 +16,43 @@ def print_usage():
     # Future: add more commands here
 
 
+def print_model_result(model_type, result):
+    print(
+        f"Model: {model_type} | Accuracy: {result['accuracy']:.4f} | Saved to: {result['model_path']}"
+    )
+    wine = load_wine()
+    formatter_input = {
+        "matrix": result["confusion_matrix"],
+        "labels": wine.target_names.tolist(),
+        "plot_path": "(not generated)",
+        "classification_report": "(not implemented)",
+    }
+    print(format_confusion_matrix_result(formatter_input))
+    print()
+
+
 def handle_train(args):
+    all_models = ["decision_tree", "logistic_regression", "svm"]
     if "--model" in args:
         idx = args.index("--model")
         if idx + 1 < len(args):
             model_type = args[idx + 1]
-            print(f"Training model: {model_type}. Please wait...")
+            print(f"Training model: {model_type}. Please wait...\n")
             result = train(model_type=model_type)
-            print(f"Model trained. Accuracy: {result['accuracy']:.4f}")
-            print(f"Model saved to: {result['model_path']}\n")
+            print_model_result(model_type, result)
         else:
             print("Error: --model provided but no model type specified.")
     else:
-        # Train all models if no specific model is provided
-        all_models = ["decision_tree", "logistic_regression", "svm"]
-        results = []
         print(
-            "No --model specified. Training all models: decision_tree, logistic_regression, svm. Please wait...\n"
+            "No --model specified. Training all models: decision_tree, logistic_regression, svm. Please wait..."
         )
         for model_type in all_models:
+            print(f"-" * 120)
+            print(f"Training model: {model_type}. Please wait...\n")
             result = train(model_type=model_type)
-            results.append(result)
-            print(
-                f"Model: {model_type} | Accuracy: {result['accuracy']:.4f} | Saved to: {result['model_path']}"
-            )
-        print("\nAll models trained.")
+            print_model_result(model_type, result)
+            print(f"-" * 120) if model_type == all_models[-1] else ""
+        print("All models trained.\n")
 
 
 COMMAND_HANDLERS = {
