@@ -55,6 +55,17 @@ Compare various ML models (e.g., decision trees, SVM, logistic regression) on th
         ```
     - Each model is saved to a separate file: `artifacts/model_[model_type].joblib`
 
+- `python -m src.cli compare` — trains and evaluates all models, then compares their results.
+    - Output:
+        - Summary table with model name, accuracy, and model path
+        - Best model(s) highlighted
+        - Accuracy differences for each model
+        - Confusion matrix for each model
+    - Example:
+        ```bash
+        python -m src.cli compare
+        ```
+
 ---
 
 ## Model Training
