@@ -11,31 +11,47 @@ def print_comparison_table(results):
     reset = "\033[0m"
 
     print(f"{bold}{cyan}Model comparison results:{reset}")
-    header = f"{'Rank':<5} {'Model':<20} {'Accuracy':<10} {'Δ vs best':<12} {'Model Path'}"
+    header = (
+        f"{'Rank':<5} {'Model':<20} {'Accuracy':<10} {'Δ vs best':<12} {'Model Path'}"
+    )
     print(f"{bold}{header}{reset}")
     print("=" * len(header))
     # Sort by accuracy descending
-    sorted_results = sorted(results, key=lambda r: r['accuracy'], reverse=True)
+    sorted_results = sorted(results, key=lambda r: r["accuracy"], reverse=True)
     best_acc = sorted_results[0]["accuracy"]
     best_models = [r["model"] for r in sorted_results if r["accuracy"] == best_acc]
     for idx, r in enumerate(sorted_results, 1):
         diff = r["accuracy"] - best_acc
         percent = (diff / best_acc) * 100 if best_acc > 0 else 0
-        color = green if r["model"] in best_models else yellow if abs(percent) < 2 else reset
-        print(f"{color}{idx:<5} {r['model']:<20} {r['accuracy']:<10.4f} {percent:+8.2f}%   {r['model_path']}{reset}")
+        color = (
+            green
+            if r["model"] in best_models
+            else yellow if abs(percent) < 2 else reset
+        )
+        print(
+            f"{color}{idx:<5} {r['model']:<20} {r['accuracy']:<10.4f} {percent:+8.2f}%   {r['model_path']}{reset}"
+        )
     print()
-    print(f"{bold}Best model(s): {', '.join(best_models)} (accuracy: {best_acc:.4f}){reset}")
+    print(
+        f"{bold}Best model(s): {', '.join(best_models)} (accuracy: {best_acc:.4f}){reset}"
+    )
     if len(best_models) == 1:
-        print(f"{green}The best model achieved the highest accuracy. Consider using it as your production baseline.{reset}")
+        print(
+            f"{green}The best model achieved the highest accuracy. Consider using it as your production baseline.{reset}"
+        )
     else:
-        print(f"{yellow}Multiple models achieved the same best accuracy. You may choose based on speed, interpretability, or other factors.{reset}")
+        print(
+            f"{yellow}Multiple models achieved the same best accuracy. You may choose based on speed, interpretability, or other factors.{reset}"
+        )
     print()
     print(f"{bold}Interpretation:{reset}")
     for r in sorted_results:
         if r["model"] in best_models:
             print(f"{green}- {r['model']} is a top performer on this dataset.{reset}")
         else:
-            print(f"{yellow}- {r['model']} is {abs((r['accuracy']-best_acc)/best_acc)*100:.2f}% less accurate than the best model.{reset}")
+            print(
+                f"{yellow}- {r['model']} is {abs((r['accuracy']-best_acc)/best_acc)*100:.2f}% less accurate than the best model.{reset}"
+            )
     print()
 
 
