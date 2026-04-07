@@ -1,8 +1,13 @@
+import os
 import sys
 from sklearn.datasets import load_wine
 from src.trainer import train
 from src.available_models import AVAILABLE_MODELS
 from src.formatters.confusion_matrix_formatter import format_confusion_matrix_result
+from src.formatters.comparison_formatter import (
+    print_comparison_table,
+    print_model_reports,
+)
 
 
 def print_usage():
@@ -50,28 +55,6 @@ def handle_train(args):
         print("All models trained.\n")
 
 
-def print_comparison_table(results):
-    print("Model comparison results:")
-    header = f"{'Model':<20} {'Accuracy':<10} {'Model Path'}"
-    print(header)
-    print("-" * len(header))
-    for r in results:
-        print(f"{r['model']:<20} {r['accuracy']:<10.4f} {r['model_path']}")
-    print()
-
-    # Find best model(s)
-    best_acc = max(r["accuracy"] for r in results)
-    best_models = [r["model"] for r in results if r["accuracy"] == best_acc]
-    print(f"Best model(s): {', '.join(best_models)} (accuracy: {best_acc:.4f})")
-    print()
-    # Show accuracy differences
-    print("Accuracy differences:")
-    for r in results:
-        diff = best_acc - r["accuracy"]
-        print(f"{r['model']:<20} {diff:+.4f}")
-    print()
-
-
 def handle_compare(args):
     from src.trainer import compare_models
 
@@ -79,17 +62,37 @@ def handle_compare(args):
     results = compare_models()
     print_comparison_table(results)
 
+    # Plot model accuracies
+    try:
+        import matplotlib.pyplot as plt
+
+        model_names = [r["model"] for r in results]
+        accuracies = [r["accuracy"] for r in results]
+        plt.figure(figsize=(8, 5))
+        bars = plt.bar(model_names, accuracies, color="skyblue")
+        plt.ylim(0, 1)
+        plt.ylabel("Accuracy")
+        plt.title("Model Accuracy Comparison")
+        for bar, acc in zip(bars, accuracies):
+            plt.text(
+                bar.get_x() + bar.get_width() / 2,
+                bar.get_height(),
+                f"{acc:.3f}",
+                ha="center",
+                va="bottom",
+            )
+        os.makedirs("artifacts", exist_ok=True)
+        plot_path = os.path.join("artifacts", "model_comparison.png")
+        plt.savefig(plot_path)
+        plt.close()
+        print(f"\nAccuracy bar plot saved to: {plot_path}\n")
+    except ImportError:
+        print(
+            "matplotlib is not installed. Skipping plot generation. To enable, install matplotlib."
+        )
+
     wine = load_wine()
-    print("Confusion matrices:")
-    for r in results:
-        print(f"\nModel: {r['model']}")
-        formatter_input = {
-            "matrix": r["confusion_matrix"],
-            "labels": wine.target_names.tolist(),
-            "plot_path": "(not generated)",
-            "classification_report": None,
-        }
-        print(format_confusion_matrix_result(formatter_input))
+    print_model_reports(results, wine)
 
 
 COMMAND_HANDLERS = {

@@ -45,4 +45,9 @@ def format_confusion_matrix_result(result):
     if not confusion_found:
         lines.append("- No class confusions detected")
 
+    lines.append("")
+    lines.append("Classification report:")
+    lines.extend(result["classification_report"].splitlines())
+
+    lines.append("")
     return "\n".join(lines)
