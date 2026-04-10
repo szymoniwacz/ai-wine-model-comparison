@@ -2,6 +2,8 @@
 
 Professional project for comparing machine learning models on the wine dataset from scikit-learn.
 
+> **Status:** Experimental/demo project for ML model comparison. Not intended for production use.
+
 ---
 
 ## Project Structure
@@ -105,3 +107,7 @@ Interpretation:
 - **Confusion matrix & classification report**: For each model, you get a detailed breakdown of predictions and per-class metrics.
 
 **Tip:** If multiple models have the same accuracy, consider other factors (speed, interpretability, robustness) when choosing your production model.
+
+## License
+
+MIT — see [LICENSE](LICENSE)
