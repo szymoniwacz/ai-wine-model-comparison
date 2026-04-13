@@ -1,5 +1,7 @@
 # AI Wine Model Comparison
 
+[![Tests](https://github.com/szymoniwacz/ai-wine-model-comparison/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/szymoniwacz/ai-wine-model-comparison/actions/workflows/tests.yml)
+
 Professional project for comparing machine learning models on the wine dataset from scikit-learn.
 
 > **Status:** Experimental/demo project for ML model comparison. Not intended for production use.
@@ -9,9 +11,12 @@ Professional project for comparing machine learning models on the wine dataset f
 ## Project Structure
 
 - `src/` – source code
+- `tests/` – simple unit tests (pytest)
 - `data/` – data (empty by default, gitignored)
 - `notebooks/` – experimental notebooks
+- `.github/workflows/tests.yml` – GitHub Actions test workflow
 - `requirements.txt` – dependencies
+- `requirements-dev.txt` – development/test dependencies
 - `.gitignore` – ignore file
 
 ---
@@ -36,10 +41,28 @@ Professional project for comparing machine learning models on the wine dataset f
     ```
    Each trained model will be saved to `artifacts/model_[model_type].joblib` and accuracy will be printed in the terminal.
 
+    3. Run tests:
+        ```bash
+        pip install -r requirements-dev.txt
+        pytest -q
+        ```
+
 ---
 
 ## Project Goal
 Compare various ML models (e.g., decision trees, SVM, logistic regression) on the wine dataset, analyze results, and visualize findings.
+
+---
+
+## Tests and CI
+
+- Local tests are written in `tests/` and use `pytest`
+- Run locally:
+    ```bash
+    pip install -r requirements-dev.txt
+    pytest -q
+    ```
+- GitHub Actions workflow in `.github/workflows/tests.yml` runs tests on every push and pull request
 
 ---
 
