@@ -14,7 +14,8 @@ def print_usage():
     print("Usage:")
     print("  python -m src.cli train [--model MODEL_TYPE]")
     print("    --model MODEL_TYPE: decision_tree (default), logistic_regression, svm")
-    # Future: add more commands here
+    print("  python -m src.cli compare")
+    print("  python -m src.cli experiment-model-behavior")
 
 
 def print_model_result(model_type, result):
@@ -95,9 +96,32 @@ def handle_compare(args):
     print_model_reports(results, wine)
 
 
+def handle_experiment_model_behavior(_args: list) -> None:
+    from src.experiments.model_behavior import run
+
+    print(
+        "Running experiment: model behavior comparison (Logistic Regression vs SVM)...\n"
+    )
+    result = run()
+
+    print("Accuracies:")
+    for name, acc in result["accuracies"].items():
+        print(f"  {name.replace('_', ' ').title()}: {acc:.4f}")
+
+    print(
+        f"\nDisagreements: {result['disagreement_count']} test sample(s) "
+        "where Logistic Regression and SVM predict differently"
+    )
+
+    print("\nGenerated artifacts:")
+    for key, path in result["artifact_paths"].items():
+        print(f"  [{key}] {path}")
+
+
 COMMAND_HANDLERS = {
     "train": handle_train,
     "compare": handle_compare,
+    "experiment-model-behavior": handle_experiment_model_behavior,
 }
 
 

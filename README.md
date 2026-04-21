@@ -110,6 +110,24 @@ Interpretation:
         python -m src.cli compare
         ```
 
+- `python -m src.cli experiment-model-behavior` — compares Logistic Regression and SVM beyond headline accuracy.
+    - Both models are trained on the **same train/test split**, so accuracy differences are meaningful.
+    - The experiment also finds test samples where the two models **disagree**, even when their overall accuracy is identical. Two models can achieve the same score and still make different mistakes — this surfaces where.
+    - Example:
+        ```bash
+        python -m src.cli experiment-model-behavior
+        ```
+    - Output:
+        - Accuracy for each model
+        - Number of test samples where predictions differ
+        - Paths to all generated plot files
+    - Generated artifacts (saved to `artifacts/`):
+        - `cm_logistic_regression.png` — confusion matrix for Logistic Regression
+        - `cm_svm.png` — confusion matrix for SVM
+        - `cm_combined.png` — both confusion matrices side by side
+        - `model_agreement.png` — bar chart of agreement vs disagreement counts
+        - `accuracy_comparison.png` — accuracy bar chart for both models
+
 ---
 
 ## Model Training
